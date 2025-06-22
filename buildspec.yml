@@ -5,12 +5,12 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 084828567158.dkr.ecr.eu-central-1.amazonaws.com
-      - IMAGE_URI=your-aws-account-id.dkr.ecr.eu-central-1.amazonaws.com/pet-tracker-fe:latest
+      - IMAGE_URI=084828567158.dkr.ecr.eu-central-1.amazonaws.com/pet-tracker-fe:latest
   build:
     commands:
       - echo Building the Docker image...
       - docker build -t pet-tracker-fe .
-      - docker tag pet-tracker-fe:latest your-aws-account-id.dkr.ecr.eu-central-1.amazonaws.com/pet-tracker-fe:latest
+      - docker tag pet-tracker-fe:latest 084828567158.dkr.ecr.eu-central-1.amazonaws.com/pet-tracker-fe:latest
   post_build:
     commands:
       - echo Pushing the Docker image...
