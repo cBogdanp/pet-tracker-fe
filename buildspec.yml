@@ -5,6 +5,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin your-aws-account-id.dkr.ecr.eu-central-1.amazonaws.com
+      - IMAGE_URI=your-aws-account-id.dkr.ecr.eu-central-1.amazonaws.com/pet-tracker-fe:latest
   build:
     commands:
       - echo Building the Docker image...
@@ -13,6 +14,12 @@ phases:
   post_build:
     commands:
       - echo Pushing the Docker image...
-      - docker push your-aws-account-id.dkr.ecr.eu-central-1.amazonaws.com/pet-tracker-fe:latest
+        - docker push $IMAGE_URI
+        - echo Updating kubeconfig for EKS...
+        - aws eks update-kubeconfig --name frontend-micro-frontend-cluster --region eu-central-1
+        - echo Deploying to EKS...
+        - sed -i "s|IMAGE_URI|$IMAGE_URI|g" k8s/deployment.yaml
+        - kubectl apply -f k8s/deployment.yaml
+        - kubectl apply -f k8s/service.yaml
 artifacts:
   files: '**/*'

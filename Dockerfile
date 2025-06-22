@@ -2,8 +2,8 @@
 FROM node:20 as build
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
 RUN npm run build --prod
 
@@ -12,6 +12,4 @@ FROM nginx:alpine
 
 COPY --from=build /app/dist/your-app-name /usr/share/nginx/html
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+COPY nginx.conf /etc/nginx/nginx.conf
